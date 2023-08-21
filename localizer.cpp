@@ -6,15 +6,12 @@
 	correctly implementing the "initialize_beliefs", 
 	"sense", and "move" functions.
 
-	This file is incomplete! Your job is to make these
-	functions work. Feel free to look at localizer.py 
-	for working implementations which are written in python.
 */
 
 #include "localizer.h"
 #include "helpers.cpp"
 #include <stdlib.h>
-#include "debugging_helpers.cpp"
+//#include "debugging_helpers.cpp"
 
 using namespace std;
 
@@ -40,12 +37,12 @@ using namespace std;
            0.25 0.25
 */
 vector< vector <float> > initialize_beliefs(vector< vector <char> > grid) {
-	vector< vector <float> > newGrid;
-
-	// your code here
-	
+	int height = grid.size(), width = grid[0].size();
+	vector< vector <float> > newGrid (height, vector <float> (width, 1 / (height * width)));
+		
 	return newGrid;
 }
+
 
 /**
   TODO - implement this function 

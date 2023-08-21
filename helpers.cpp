@@ -16,7 +16,7 @@
 #include <string>
 #include <fstream>
 #include "helpers.h"
-// #include "debugging_helpers.cpp"
+#include "debugging_helpers.cpp"
 
 using namespace std;
 
@@ -35,8 +35,22 @@ using namespace std;
 vector< vector<float> > normalize(vector< vector <float> > grid) {
 	
 	vector< vector<float> > newGrid;
+	float total = 0.0;
+	
+	for (size_t i = 0; i < grid.size(); i++) {
+		for (size_t j = 0; j < grid[0].size(); j++) {
+			total += grid[i][j];
+		}
+	}
 
-	// todo - your code here
+	vector<float> row;
+	for (size_t i = 0; i < grid.size(); i++) {
+		row.clear();
+		for (size_t j = 0; j < grid[0].size(); j++) {
+			row.push_back(grid[i][j] / total);
+		}
+		newGrid.push_back(row);
+	}
 
 	return newGrid;
 }
@@ -114,8 +128,8 @@ bool close_enough(vector < vector <float> > g1, vector < vector <float> > g2) {
 	if (g1[0].size() != g2[0].size()) {
 		return false;
 	}
-	for (i=0; i<g1.size(); i++) {
-		for (j=0; j<g1[0].size(); j++) {
+	for (i=0; i< g1.size(); i++) {
+		for (j=0; j< g1[0].size(); j++) {
 			v1 = g1[i][j];
 			v2 = g2[i][j];
 			if (abs(v2-v1) > 0.0001 ) {
@@ -216,8 +230,12 @@ vector < vector <float> > zeros(int height, int width) {
 	return newGrid;
 }
 
-// int main() {
-// 	vector < vector < char > > map = read_map("maps/m1.txt");
-// 	show_grid(map);
-// 	return 0;
-// }
+/**
+int main() {
+	vector < vector < char > > map = read_map("maps/m1.txt");
+	show_grid(map);
+	return 0;
+}
+**/
+
+
