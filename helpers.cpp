@@ -16,7 +16,7 @@
 #include <string>
 #include <fstream>
 #include "helpers.h"
-#include "debugging_helpers.cpp"
+//#include "debugging_helpers.cpp"
 
 using namespace std;
 
@@ -90,21 +90,37 @@ vector< vector<float> > normalize(vector< vector <float> > grid) {
 */
 vector < vector <float> > blur(vector < vector < float> > grid, float blurring) {
 
-	vector < vector <float> > newGrid;
-	
-	// your code here
+	int height = grid.size(), width = grid[0].size();
+
+	float center_prob = 1.0 - blurring;
+	float corner_prob = blurring / 12.0;
+	float adjacent_prob = blurring / 6.0;
+
+	vector < vector <float> > window = {
+			{corner_prob,  adjacent_prob,  corner_prob},
+            {adjacent_prob, center_prob,  adjacent_prob},
+            {corner_prob,  adjacent_prob,  corner_prob}};
+
+
+	float mult = 0.0;
+	int new_i, new_j = 0;
+
+	vector < vector <float> > newGrid (height, vector <float> (width, 0.0));
+	for (size_t i = 0; i < height; i++) {
+		for (size_t j = 0; j < width; j++) {
+			for (size_t dx = -1; dx < 2; dx++) {
+				for (size_t dy = -1; dy < 2; dy++) {
+					mult = window[dx + 1][dy + 1];
+					new_i = (i + dy) % height;
+					new_j = (j + dx) % width;
+					newGrid[new_i][new_j] += mult * grid[i][j];
+				}
+			}
+		}
+	}
 
 	return normalize(newGrid);
 }
-
-/** -----------------------------------------------
-#
-#
-#	You do not need to modify any code below here.
-#
-#
-# ------------------------------------------------- */
-
 
 /**
     Determines when two grids of floating point numbers 

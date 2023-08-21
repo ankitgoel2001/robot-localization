@@ -11,7 +11,7 @@
 #include "localizer.h"
 #include "helpers.cpp"
 #include <stdlib.h>
-//#include "debugging_helpers.cpp"
+#include "debugging_helpers.cpp"
 
 using namespace std;
 
@@ -38,7 +38,7 @@ using namespace std;
 */
 vector< vector <float> > initialize_beliefs(vector< vector <char> > grid) {
 	int height = grid.size(), width = grid[0].size();
-	vector< vector <float> > newGrid (height, vector <float> (width, 1 / (height * width)));
+	vector< vector <float> > newGrid (height, vector <float> (width, 1.0 / (height * width)));
 		
 	return newGrid;
 }
@@ -86,9 +86,17 @@ vector< vector <float> > move(int dy, int dx,
   float blurring) 
 {
 
-  vector < vector <float> > newGrid;
-
-  // your code here
+  int height = beliefs.size(), width = beliefs[0].size();
+  vector < vector <float> > newGrid (height, vector <float> (width, 0.0));
+  
+  int new_i, new_j = 0; 
+  for (size_t i = 0; i < height; i++) {
+	for (size_t j = 0; j < width; j++) {
+		new_i = (i + dy + height) % height;
+		new_j = (j + dx + width) % width;
+		newGrid[new_i][new_j] = beliefs[i][j];
+	}
+  }
 
   return blur(newGrid, blurring);
 }
@@ -137,9 +145,19 @@ vector< vector <float> > sense(char color,
 	float p_hit,
 	float p_miss) 
 {
-	vector< vector <float> > newGrid;
+	vector< vector <float> > newBeliefs;
+	int height = beliefs.size(), width = beliefs[0].size();
+	bool hit = false;
 
-	// your code here
-
-	return normalize(newGrid);
+	for (size_t i = 0; i < height; i++) {
+		vector <float> row;
+		for (size_t j = 0; j < width; j++) {
+			hit = (grid[i][j] == color);
+				row.push_back(beliefs[i][j] * (hit * p_hit + (1 - hit) * p_miss));
+		}
+		newBeliefs.push_back(row);
+		row.clear();
+	} 
+	
+	return normalize(newBeliefs);
 }
